@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using ToDoList.Domain.Dtos;
+using ToDoList.Domain.Dtos.Task;
 using ToDoList.Infrastructure;
+using ToDoList.Utilities;
 
 namespace ToDoList.Services;
 
@@ -35,13 +36,16 @@ public class TaskService
         return _mapper.Map<Domain.Entities.Task, TaskDto>(task);
     }
 
-    //public async Task<IEnumerable<TaskDto>> GetAll()
-    //{
-
-    //}
-
-    public async Task Delete()
+    public async Task<IEnumerable<TaskDto>> GetAll()
     {
+        var tasks = await _appDbContext.Tasks.ToListAsync();
+        return _mapper.MapCollection<Domain.Entities.Task, TaskDto>(tasks);
+    }
 
+    public async Task Delete(int id)
+    {
+        var task = await _appDbContext.Tasks.SingleAsync(x => x.Id == id);
+        _appDbContext.Tasks.Remove(task);
+        await _appDbContext.SaveChangesAsync();
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ToDoList.Domain.Dtos;
+﻿namespace ToDoList.Domain.Dtos.Task;
 
 public class TaskAddDto
 {

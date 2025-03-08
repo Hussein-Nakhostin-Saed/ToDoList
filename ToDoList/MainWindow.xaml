@@ -8,6 +8,16 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <DataGrid ItemsSource="{Binding People}"  AutoGenerateColumns="True"/>
+        <StackPanel Orientation="Horizontal">
+            <Border x:Name="Card1" Width="100" Height="100" Background="LightBlue" Margin="10" MouseLeftButtonDown="Card_MouseLeftButtonDown">
+                <TextBlock Text="Card 1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <Border x:Name="Card2" Width="100" Height="100" Background="LightGreen" Margin="10" MouseLeftButtonDown="Card_MouseLeftButtonDown">
+                <TextBlock Text="Card 2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <Border x:Name="DropTarget" Width="200" Height="200" Background="LightGray" Margin="10" AllowDrop="True" Drop="DropTarget_Drop">
+                <TextBlock Text="Drop Here" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+        </StackPanel>
     </Grid>
 </Window>
