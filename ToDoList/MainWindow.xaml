@@ -8,16 +8,25 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <StackPanel Orientation="Horizontal">
-            <Border x:Name="Card1" Width="100" Height="100" Background="LightBlue" Margin="10" MouseLeftButtonDown="Card_MouseLeftButtonDown">
-                <TextBlock Text="Card 1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Border>
-            <Border x:Name="Card2" Width="100" Height="100" Background="LightGreen" Margin="10" MouseLeftButtonDown="Card_MouseLeftButtonDown">
-                <TextBlock Text="Card 2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Border>
-            <Border x:Name="DropTarget" Width="200" Height="200" Background="LightGray" Margin="10" AllowDrop="True" Drop="DropTarget_Drop">
-                <TextBlock Text="Drop Here" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Border>
-        </StackPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <ListBox Grid.Column="0" ItemsSource="{Binding Column1Items}" AllowDrop="True"
+                 PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
+                 Drop="ListBox_Drop" Name="Column1ListBox" DisplayMemberPath="Title">
+        </ListBox>
+
+        <ListBox Grid.Column="1" ItemsSource="{Binding Column2Items}" AllowDrop="True"
+                 PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
+                 Drop="ListBox_Drop" Name="Column2ListBox" DisplayMemberPath="Title">
+        </ListBox>
+
+        <ListBox Grid.Column="2" ItemsSource="{Binding Column3Items}" AllowDrop="True"
+                 PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
+                 Drop="ListBox_Drop" Name="Column3ListBox" DisplayMemberPath="Title">
+        </ListBox>
     </Grid>
 </Window>

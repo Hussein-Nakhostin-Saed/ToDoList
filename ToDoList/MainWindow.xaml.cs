@@ -1,12 +1,10 @@
 ﻿using System.Collections.ObjectModel;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
+
 namespace ToDoList;
 
 /// <summary>
@@ -14,81 +12,60 @@ namespace ToDoList;
 /// </summary>
 public partial class MainWindow : Window
 {
-    private Border _draggedCard;
-    private AdornerLayer _adornerLayer;
-    private CardAdorner _cardAdorner;
-    private Point _startPoint;
+    private CardItem _draggedItem; // تغییر نوع به CardItem
 
     public MainWindow()
     {
         InitializeComponent();
+        DataContext = new MainWindowViewModel();
     }
 
-    private void Card_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    private void ListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-        _draggedCard = sender as Border;
-        _startPoint = e.GetPosition(this);
-        _adornerLayer = AdornerLayer.GetAdornerLayer(this);
-        _cardAdorner = new CardAdorner(_draggedCard, _startPoint);
-        _adornerLayer.Add(_cardAdorner);
-        CaptureMouse();
-        e.Handled = true;
-    }
-
-    private void MainWindow_MouseMove(object sender, MouseEventArgs e)
-    {
-        if (_draggedCard != null && IsMouseCaptured)
+        ListBox listBox = sender as ListBox;
+        _draggedItem = listBox.SelectedItem as CardItem; // ذخیره آیتم دیتا
+        if (_draggedItem != null)
         {
-            Point currentPoint = e.GetPosition(this);
-            Vector offset = currentPoint - _startPoint;
-            _cardAdorner.UpdatePosition(offset);
+            DragDrop.DoDragDrop(listBox, _draggedItem, DragDropEffects.Move);
         }
     }
 
-    private void MainWindow_MouseUp(object sender, MouseButtonEventArgs e)
+    private void ListBox_Drop(object sender, DragEventArgs e)
     {
-        if (_draggedCard != null && IsMouseCaptured)
-        {
-            ReleaseMouseCapture();
-            _adornerLayer.Remove(_cardAdorner);
-            _cardAdorner = null;
-            _draggedCard = null;
-        }
-    }
+        ListBox sourceListBox = e.Source as ListBox;
+        ListBox targetListBox = sender as ListBox;
 
-    private void DropTarget_Drop(object sender, DragEventArgs e)
-    {
-        if (_draggedCard != null)
+        if (sourceListBox != targetListBox && _draggedItem != null)
         {
-            //DropTarget.Children.Add(_draggedCard);
-            _draggedCard = null;
+            var sourceItems = (ObservableCollection<CardItem>)sourceListBox.ItemsSource;
+            var targetItems = (ObservableCollection<CardItem>)targetListBox.ItemsSource;
+
+            // حذف و اضافه کردن با استفاده از آیتم دیتا
+            sourceItems.Remove(_draggedItem);
+            targetItems.Add(_draggedItem);
         }
+        _draggedItem = null;
     }
 }
 
-public class CardAdorner : Adorner
+public class CardItem
 {
-    private Border _card;
-    private Point _adornerStartPoint;
-    private TranslateTransform _translateTransform;
+    public string Title { get; set; }
 
-    public CardAdorner(Border adornedElement, Point startPoint) : base(adornedElement)
+    public CardItem(string title)
     {
-        _card = adornedElement;
-        _adornerStartPoint = startPoint;
-        _translateTransform = new TranslateTransform();
-        this.RenderTransform = _translateTransform;
-        this.IsHitTestVisible = false;
+        Title = title;
     }
 
-    public void UpdatePosition(Vector offset)
+    public override string ToString()
     {
-        _translateTransform.X = offset.X;
-        _translateTransform.Y = offset.Y;
+        return Title;
     }
+}
 
-    protected override void OnRender(DrawingContext drawingContext)
-    {
-        drawingContext.DrawRectangle(new VisualBrush(_card), null, new Rect(0, 0, _card.ActualWidth, _card.ActualHeight));
-    }
+public class MainWindowViewModel
+{
+    public ObservableCollection<string> Column1Items { get; set; } = new ObservableCollection<string> { "Card 1-1", "Card 1-2" };
+    public ObservableCollection<string> Column2Items { get; set; } = new ObservableCollection<string> { "Card 2-1", "Card 2-2" };
+    public ObservableCollection<string> Column3Items { get; set; } = new ObservableCollection<string> { "Card 3-1", "Card 3-2" };
 }
