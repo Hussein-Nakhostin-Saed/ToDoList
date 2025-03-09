@@ -7,89 +7,147 @@
         xmlns:controls="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+    <Window.Resources>
+        <local:BoolToStatusConverter x:Key="BoolToStatusConverter"/>
+        <local:BoolToColorConverter x:Key="BoolToColorConverter"/>
+        <!-- استایل دکمه‌ها -->
+        <Style x:Key="MinimalButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#0288D1"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#0277BD"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1.05" ScaleY="1.05"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#01579B"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        </Style>
 
-        <!-- ستون To Do -->
-        <Border Grid.Column="0" Margin="5" BorderBrush="Gray" BorderThickness="1">
-            <StackPanel>
-                <TextBlock Text="To Do" FontWeight="Bold" Margin="5"/>
-                <ListBox x:Name="ToDoList" 
-                        AllowDrop="True"
-                        PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
-                        Drop="ListBox_Drop"
-                        MinHeight="300">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Border Background="LightYellow" 
-                                  BorderBrush="Gray" 
-                                  BorderThickness="1" 
-                                  Margin="2"
-                                  Padding="5"
-                                  CornerRadius="3"
-                                  MouseLeftButtonUp="Card_MouseLeftButtonUp">
-                                <TextBlock Text="{Binding Title}"/>
-                            </Border>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </StackPanel>
-        </Border>
+        <!-- استایل برای TextBox -->
+        <Style x:Key="ModernTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#424242"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#616161"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="5">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Border Background="#212121" CornerRadius="15" Margin="10" BorderThickness="0">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- ستون In Progress -->
-        <Border Grid.Column="1" Margin="5" BorderBrush="Gray" BorderThickness="1">
-            <StackPanel>
-                <TextBlock Text="In Progress" FontWeight="Bold" Margin="5"/>
-                <ListBox x:Name="InProgressList"
-                        AllowDrop="True"
-                        PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
-                        Drop="ListBox_Drop"
-                        MinHeight="300">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Border Background="LightBlue" 
-                                  BorderBrush="Gray" 
-                                  BorderThickness="1" 
-                                  Margin="2"
-                                  Padding="5"
-                                  CornerRadius="3"
-                                  MouseLeftButtonUp="Card_MouseLeftButtonUp">
-                                <TextBlock Text="{Binding Title}"/>
-                            </Border>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </StackPanel>
-        </Border>
+            <!-- هدر -->
+            <Border Grid.Row="0" Background="#0288D1" CornerRadius="15,15,0,0" Padding="15">
+                <TextBlock Text="Todo List" FontSize="22" Foreground="White" FontWeight="Bold" 
+                           HorizontalAlignment="Left"/>
+            </Border>
 
-        <!-- ستون Done -->
-        <Border Grid.Column="2" Margin="5" BorderBrush="Gray" BorderThickness="1">
-            <StackPanel>
-                <TextBlock Text="Done" FontWeight="Bold" Margin="5"/>
-                <ListBox x:Name="DoneList"
-                        AllowDrop="True"
-                        PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
-                        Drop="ListBox_Drop"
-                        MinHeight="300">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Border Background="LightGreen" 
-                                  BorderBrush="Gray" 
-                                  BorderThickness="1" 
-                                  Margin="2"
-                                  Padding="5"
-                                  CornerRadius="3"
-                                  MouseLeftButtonUp="Card_MouseLeftButtonUp">
-                                <TextBlock Text="{Binding Title}"/>
-                            </Border>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+            <!-- فرم افزودن تسک -->
+            <StackPanel Grid.Row="0" Margin="20,60,20,10">
+                <TextBox x:Name="TitleTextBox" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,10" 
+                         Text="عنوان تسک"/>
+                <TextBox x:Name="DescriptionTextBox" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,10" 
+                         Text="توضیحات"/>
+                <DatePicker x:Name="DueDatePicker" Margin="0,0,0,10" Background="#424242" Foreground="White" 
+                            BorderBrush="#616161" FontSize="14"/>
+                <Button Content="اضافه کردن تسک" Click="AddTask_Click" Style="{StaticResource MinimalButtonStyle}"/>
             </StackPanel>
-        </Border>
-    </Grid>
+
+            <!-- لیست تسک‌ها -->
+            <ListView Grid.Row="1" x:Name="TaskListView" Margin="20" Background="#303030" 
+                      BorderBrush="#424242" BorderThickness="1" Foreground="White">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+                                    <Border Background="{TemplateBinding Background}" Padding="5" 
+                                            BorderBrush="#424242" BorderThickness="0,0,0,1">
+                                        <ContentPresenter/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#424242"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#0288D1"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="عنوان" Width="200" DisplayMemberBinding="{Binding Title}">
+                            <GridViewColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" FontWeight="Bold" Foreground="#B3E5FC"/>
+                                </DataTemplate>
+                            </GridViewColumn.HeaderTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="توضیحات" Width="300" DisplayMemberBinding="{Binding Description}"/>
+                        <GridViewColumn Header="تاریخ سررسید" Width="150" DisplayMemberBinding="{Binding DueDate, StringFormat=\{0:yyyy/MM/dd\}}"/>
+                        <GridViewColumn Header="وضعیت" Width="100">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding IsCompleted, Converter={StaticResource BoolToStatusConverter}}" 
+                                               Foreground="{Binding IsCompleted, Converter={StaticResource BoolToColorConverter}}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <!-- دکمه‌ها -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="20">
+                <Button Content="ویرایش" Click="EditTask_Click" Style="{StaticResource MinimalButtonStyle}" Background="#FBC02D"/>
+                <Button Content="حذف" Click="DeleteTask_Click" Style="{StaticResource MinimalButtonStyle}" Background="#D32F2F"/>
+                <Button Content="خروجی PDF" Click="ExportToPdf_Click" Style="{StaticResource MinimalButtonStyle}" Background="#7B1FA2"/>
+            </StackPanel>
+        </Grid>
+    </Border>
 </Window>

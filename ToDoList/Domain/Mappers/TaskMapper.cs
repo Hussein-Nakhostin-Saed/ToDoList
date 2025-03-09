@@ -8,9 +8,9 @@ public class TaskMapper : Profile
 {
     public TaskMapper()
     {
-        CreateMap<Entities.Task, TaskDto>();
-        CreateMap<Entities.Task, Card>();
-        CreateMap<TaskAddDto, Entities.Task>();
-        CreateMap<TaskEditDto, Entities.Task>();
+        CreateMap<Entities.TaskItem, TaskDto>();
+        CreateMap<Entities.TaskItem, Card>();
+        CreateMap<TaskAddDto, Entities.TaskItem>();
+        CreateMap<TaskEditDto, Entities.TaskItem>();
     }
 }

@@ -6,5 +6,5 @@ public class WorkLog : Entity
     public string Description { get; set; }
     public DateTime CreationDateTime { get; set; }
     public int TaskId { get; set; }
-    public Domain.Entities.Task Task { get; set; }
+    public Domain.Entities.TaskItem Task { get; set; }
 }

@@ -20,7 +20,7 @@ public class TaskService
 
     public async Task Insert(TaskAddDto dto)
     {
-        var task = _mapper.Map<Domain.Entities.Task>(dto);
+        var task = _mapper.Map<Domain.Entities.TaskItem>(dto);
         await _appDbContext.Tasks.AddAsync(task);
         await _appDbContext.SaveChangesAsync();
     }
@@ -35,26 +35,26 @@ public class TaskService
     public async Task<TaskDto> Get(int id)
     {
         var task = await _appDbContext.Tasks.SingleAsync(x => x.Id == id);
-        return _mapper.Map<Domain.Entities.Task, TaskDto>(task);
+        return _mapper.Map<Domain.Entities.TaskItem, TaskDto>(task);
     }
 
-    public async Task<ObservableCollection<Card>> GetAllToDoCards()
-    {
-        var tasks = await _appDbContext.Tasks.Where(x => x.Status == Domain.Entities.TaskStatus.ToDo).ToListAsync();
-        return _mapper.MapCollection<Domain.Entities.Task, Card>(tasks);
-    }
+    //public async Task<ObservableCollection<Card>> GetAllToDoCards()
+    //{
+    //    var tasks = await _appDbContext.Tasks.Where(x => x.Status == Domain.Entities.TaskStatus.ToDo).ToListAsync();
+    //    return _mapper.MapCollection<Domain.Entities.TaskItem, Card>(tasks);
+    //}
 
-    public async Task<ObservableCollection<Card>> GetAllInProgressCards()
-    {
-        var tasks = await _appDbContext.Tasks.Where(x => x.Status == Domain.Entities.TaskStatus.InProgress).ToListAsync();
-        return _mapper.MapCollection<Domain.Entities.Task, Card>(tasks);
-    }
+    //public async Task<ObservableCollection<Card>> GetAllInProgressCards()
+    //{
+    //    var tasks = await _appDbContext.Tasks.Where(x => x.Status == Domain.Entities.TaskStatus.InProgress).ToListAsync();
+    //    return _mapper.MapCollection<Domain.Entities.TaskItem, Card>(tasks);
+    //}
 
-    public async Task<ObservableCollection<Card>> GetAllDoneCards()
-    {
-        var tasks = await _appDbContext.Tasks.Where(x => x.Status == Domain.Entities.TaskStatus.Done).ToListAsync();
-        return _mapper.MapCollection<Domain.Entities.Task, Card>(tasks);
-    }
+    //public async Task<ObservableCollection<Card>> GetAllDoneCards()
+    //{
+    //    var tasks = await _appDbContext.Tasks.Where(x => x.Status == Domain.Entities.TaskStatus.Done).ToListAsync();
+    //    return _mapper.MapCollection<Domain.Entities.TaskItem, Card>(tasks);
+    //}
 
     public async Task Delete(int id)
     {
