@@ -9,24 +9,87 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <ListBox Grid.Column="0" ItemsSource="{Binding Column1Items}" AllowDrop="True"
-                 PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
-                 Drop="ListBox_Drop" Name="Column1ListBox" DisplayMemberPath="Title">
-        </ListBox>
+        <!-- ستون To Do -->
+        <Border Grid.Column="0" Margin="5" BorderBrush="Gray" BorderThickness="1">
+            <StackPanel>
+                <TextBlock Text="To Do" FontWeight="Bold" Margin="5"/>
+                <ListBox x:Name="ToDoList" 
+                        AllowDrop="True"
+                        PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
+                        Drop="ListBox_Drop"
+                        MinHeight="300">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="LightYellow" 
+                                  BorderBrush="Gray" 
+                                  BorderThickness="1" 
+                                  Margin="2"
+                                  Padding="5"
+                                  CornerRadius="3"
+                                  MouseLeftButtonUp="Card_MouseLeftButtonUp">
+                                <TextBlock Text="{Binding Title}"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Border>
 
-        <ListBox Grid.Column="1" ItemsSource="{Binding Column2Items}" AllowDrop="True"
-                 PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
-                 Drop="ListBox_Drop" Name="Column2ListBox" DisplayMemberPath="Title">
-        </ListBox>
+        <!-- ستون In Progress -->
+        <Border Grid.Column="1" Margin="5" BorderBrush="Gray" BorderThickness="1">
+            <StackPanel>
+                <TextBlock Text="In Progress" FontWeight="Bold" Margin="5"/>
+                <ListBox x:Name="InProgressList"
+                        AllowDrop="True"
+                        PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
+                        Drop="ListBox_Drop"
+                        MinHeight="300">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="LightBlue" 
+                                  BorderBrush="Gray" 
+                                  BorderThickness="1" 
+                                  Margin="2"
+                                  Padding="5"
+                                  CornerRadius="3"
+                                  MouseLeftButtonUp="Card_MouseLeftButtonUp">
+                                <TextBlock Text="{Binding Title}"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Border>
 
-        <ListBox Grid.Column="2" ItemsSource="{Binding Column3Items}" AllowDrop="True"
-                 PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
-                 Drop="ListBox_Drop" Name="Column3ListBox" DisplayMemberPath="Title">
-        </ListBox>
+        <!-- ستون Done -->
+        <Border Grid.Column="2" Margin="5" BorderBrush="Gray" BorderThickness="1">
+            <StackPanel>
+                <TextBlock Text="Done" FontWeight="Bold" Margin="5"/>
+                <ListBox x:Name="DoneList"
+                        AllowDrop="True"
+                        PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
+                        Drop="ListBox_Drop"
+                        MinHeight="300">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="LightGreen" 
+                                  BorderBrush="Gray" 
+                                  BorderThickness="1" 
+                                  Margin="2"
+                                  Padding="5"
+                                  CornerRadius="3"
+                                  MouseLeftButtonUp="Card_MouseLeftButtonUp">
+                                <TextBlock Text="{Binding Title}"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

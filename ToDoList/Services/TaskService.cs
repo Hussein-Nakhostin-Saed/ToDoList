@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.ObjectModel;
+using ToDoList.Domain.Dtos;
 using ToDoList.Domain.Dtos.Task;
 using ToDoList.Infrastructure;
 using ToDoList.Utilities;
@@ -36,10 +38,22 @@ public class TaskService
         return _mapper.Map<Domain.Entities.Task, TaskDto>(task);
     }
 
-    public async Task<IEnumerable<TaskDto>> GetAll()
+    public async Task<ObservableCollection<Card>> GetAllToDoCards()
     {
-        var tasks = await _appDbContext.Tasks.ToListAsync();
-        return _mapper.MapCollection<Domain.Entities.Task, TaskDto>(tasks);
+        var tasks = await _appDbContext.Tasks.Where(x => x.Status == Domain.Entities.TaskStatus.ToDo).ToListAsync();
+        return _mapper.MapCollection<Domain.Entities.Task, Card>(tasks);
+    }
+
+    public async Task<ObservableCollection<Card>> GetAllInProgressCards()
+    {
+        var tasks = await _appDbContext.Tasks.Where(x => x.Status == Domain.Entities.TaskStatus.InProgress).ToListAsync();
+        return _mapper.MapCollection<Domain.Entities.Task, Card>(tasks);
+    }
+
+    public async Task<ObservableCollection<Card>> GetAllDoneCards()
+    {
+        var tasks = await _appDbContext.Tasks.Where(x => x.Status == Domain.Entities.TaskStatus.Done).ToListAsync();
+        return _mapper.MapCollection<Domain.Entities.Task, Card>(tasks);
     }
 
     public async Task Delete(int id)
