@@ -1,65 +1,60 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.ObjectModel;
-using ToDoList.Domain.Dtos;
-using ToDoList.Domain.Dtos.Task;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+using ToDoList.Domain.Entities;
 using ToDoList.Infrastructure;
-using ToDoList.Utilities;
 
 namespace ToDoList.Services;
 
 public class TaskService
 {
     private readonly AppDbContext _appDbContext;
-    private readonly IMapper _mapper;
-    public TaskService(AppDbContext appDbContext, IMapper mapper)
+    public TaskService(AppDbContext appDbContext)
     {
         _appDbContext = appDbContext;
-        _mapper = mapper;
     }
 
-    public async Task Insert(TaskAddDto dto)
+    public async Task Insert(TaskItem task)
     {
-        var task = _mapper.Map<Domain.Entities.TaskItem>(dto);
         await _appDbContext.Tasks.AddAsync(task);
         await _appDbContext.SaveChangesAsync();
     }
 
-    public async Task Update(TaskEditDto dto)
+    public async Task Update(TaskItem task)
     {
-        var task = await _appDbContext.Tasks.SingleAsync(x => x.Id == dto.Id);
-        _mapper.Map(task, dto);
+        _appDbContext.Tasks.Update(task);
         await _appDbContext.SaveChangesAsync();
     }
 
-    public async Task<TaskDto> Get(int id)
+    public async Task<IEnumerable<TaskItem>> GetAll()
     {
-        var task = await _appDbContext.Tasks.SingleAsync(x => x.Id == id);
-        return _mapper.Map<Domain.Entities.TaskItem, TaskDto>(task);
+        return await _appDbContext.Tasks.ToListAsync();
     }
 
-    //public async Task<ObservableCollection<Card>> GetAllToDoCards()
-    //{
-    //    var tasks = await _appDbContext.Tasks.Where(x => x.Status == Domain.Entities.TaskStatus.ToDo).ToListAsync();
-    //    return _mapper.MapCollection<Domain.Entities.TaskItem, Card>(tasks);
-    //}
-
-    //public async Task<ObservableCollection<Card>> GetAllInProgressCards()
-    //{
-    //    var tasks = await _appDbContext.Tasks.Where(x => x.Status == Domain.Entities.TaskStatus.InProgress).ToListAsync();
-    //    return _mapper.MapCollection<Domain.Entities.TaskItem, Card>(tasks);
-    //}
-
-    //public async Task<ObservableCollection<Card>> GetAllDoneCards()
-    //{
-    //    var tasks = await _appDbContext.Tasks.Where(x => x.Status == Domain.Entities.TaskStatus.Done).ToListAsync();
-    //    return _mapper.MapCollection<Domain.Entities.TaskItem, Card>(tasks);
-    //}
-
-    public async Task Delete(int id)
+    public async Task Delete(TaskItem task)
     {
-        var task = await _appDbContext.Tasks.SingleAsync(x => x.Id == id);
         _appDbContext.Tasks.Remove(task);
         await _appDbContext.SaveChangesAsync();
+    }
+
+    public async Task ExportToPdf()
+    {
+        var document = new PdfDocument();
+        var page = document.AddPage();
+        var gfx = XGraphics.FromPdfPage(page);
+        var font = new XFont("Verdana", 12);
+
+        var tasks = await _appDbContext.Tasks.ToListAsync();
+        int yPoint = 40;
+
+        foreach (var task in tasks)
+        {
+            gfx.DrawString($"{task.Title} - {task.DueDate} - {(task.IsCompleted ? "Done" : "To Do")}",
+                font, XBrushes.Black, new XRect(40, yPoint, page.Width, page.Height), XStringFormats.TopLeft);
+            yPoint += 20;
+        }
+
+        document.Save("Tasks.pdf");
     }
 }
