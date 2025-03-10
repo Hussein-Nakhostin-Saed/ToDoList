@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="ToDo App" Height="800" Width="800">
     <Window.Resources>
-        <local:TextToVisibilityConverter x:Key="TextToVisibilityConverter"/>
+        <!--<local:TextToVisibilityConverter x:Key="TextToVisibilityConverter"/>-->
         <local:BoolToStatusConverter x:Key="BoolToStatusConverter"/>
         <local:BoolToColorConverter x:Key="BoolToColorConverter"/>
         <Style x:Key="MinimalButtonStyle" TargetType="Button">

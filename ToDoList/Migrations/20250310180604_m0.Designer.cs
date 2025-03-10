@@ -12,7 +12,7 @@ using ToDoList.Infrastructure;
 namespace ToDoList.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250310041354_m0")]
+    [Migration("20250310180604_m0")]
     partial class m0
     {
         /// <inheritdoc />

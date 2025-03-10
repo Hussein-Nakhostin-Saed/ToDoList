@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using ToDoList.Domain.Entities;
@@ -10,9 +11,9 @@ namespace ToDoList.Services;
 public class TaskService
 {
     private readonly AppDbContext _appDbContext;
-    public TaskService(AppDbContext appDbContext)
+    public TaskService(IServiceProvider serviceProvider)
     {
-        _appDbContext = appDbContext;
+        _appDbContext = serviceProvider.GetRequiredService<AppDbContext>();
     }
 
     public async Task Insert(TaskItem task)

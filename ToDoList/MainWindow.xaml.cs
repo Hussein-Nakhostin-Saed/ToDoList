@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using NLog;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,12 +16,14 @@ namespace ToDoList;
 public partial class MainWindow : Window
 {
     private TaskService _taskService;
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     public MainWindow(IServiceProvider serviceProvider)
     {
         InitializeComponent();
         _taskService = serviceProvider.GetRequiredService<TaskService>();
         LoadTasks();
+        _logger.Info($"Application started in {DateTime.Now}.");
     }
 
     private async void LoadTasks()
@@ -42,6 +45,8 @@ public partial class MainWindow : Window
         LoadTasks();
 
         SetElementsEmpty();
+
+        _logger.Info($"{task.Title} Task Inserted");
     }
 
     private void TaskListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -72,6 +77,8 @@ public partial class MainWindow : Window
             SetElementsEmpty();
 
             TaskListView.SelectedItem = null;
+
+            _logger.Info($"{selectedTask.Title} Task Edited");
         }
     }
 
@@ -81,6 +88,8 @@ public partial class MainWindow : Window
         {
             await _taskService.Delete(selectedTask);
             LoadTasks();
+
+            _logger.Info($"{selectedTask.Title} Task Deleted");
         }
     }
 
@@ -90,9 +99,11 @@ public partial class MainWindow : Window
         {
             await _taskService.ExportToPdf();
             MessageBox.Show("Pdf exported successfully!");
+            _logger.Info($"Pdf Export in {DateTime.Now}");
         }
         catch (Exception)
         {
+            _logger.Error($"Pdf Export Operation Failed in {DateTime.Now}");
             throw;
         }
     }
